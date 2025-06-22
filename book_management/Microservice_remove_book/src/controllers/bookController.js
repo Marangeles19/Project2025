@@ -1,31 +1,19 @@
 import { BookModel } from '../models/bookModel.js';
 
 class BookController {
-  async addBook(req, res) {
+  async deleteBook(req, res) {
     try {
-      const { title, author, category, lenguage, description, total_copies, available_copies, location} = req.body;
+      const { id } = req.params;
+      const result = await BookModel.destroy({ where: { id } });
 
-      // Create the new book and save it in the DB
-      const newBook = await BookModel.create({
-        title,
-        author,
-        category,
-        lenguage,
-        description,
-        total_copies: 1, // Asignar un valor por defecto
-        available_copies: 1, // Asignar un valor por defecto
-        location,
-      });
+      if (result === 0) {
+        return res.status(404).json({ message: 'Book not found' });
+      }
 
-      // Return the new book in the answer
-      res.json({
-        success: true,
-        message: 'Book remove successfully',
-        book: newBook, // This includes the book created
-      });
+      res.status(200).json({ message: 'Book successfully deleted' });
     } catch (error) {
-      console.error('Error adding Dog:', error);
-      res.status(500).json({ success: false, message: 'Error adding Book' });
+      console.error('Error deleting book:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
   }
 }

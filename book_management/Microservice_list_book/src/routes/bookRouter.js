@@ -7,6 +7,6 @@ const bookRouter = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-bookRouter.get("/list", (req, res) => bookController.getAllBooksBook(req, res));
+bookRouter.get("/list", (req, res) => bookController.getAllBooks(req, res));
 
 export default bookRouter;
