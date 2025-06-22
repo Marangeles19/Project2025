@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+  /* Estilo CSS para hacer la tabla más pequeña */
+  .table th, .table td {
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    padding: 5px;   /* Reducir el padding */
+  }
+  
+  .table {
+    font-size: 0.9rem; /* Tamaño de fuente más pequeño para la tabla */
+  }
