@@ -1,0 +1,1 @@
+npm install cookie-parser cors dotenv express mongoose morgan multer swagger-ui-express
