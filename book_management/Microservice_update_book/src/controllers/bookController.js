@@ -1,4 +1,4 @@
-import { BookModel } from '../models/bookModels.js';
+import { BookModel } from '../models/bookModel.js';
 
 class BookController {
   async addBook(req, res) {

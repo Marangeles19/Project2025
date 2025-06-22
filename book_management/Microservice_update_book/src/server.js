@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.json());
 
 // Routes
-// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/books", bookRouter);

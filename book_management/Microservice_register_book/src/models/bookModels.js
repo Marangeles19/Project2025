@@ -1,7 +1,7 @@
 import { database } from '../config/mysqldb.js';
 import { DataTypes } from 'sequelize';
 
-const BookModel = database.define('book', {
+const BookModel = database.define('Book', {
   title: { type: DataTypes.STRING, allowNull: false },
   author: { type: DataTypes.STRING, allowNull: false },
   category: { type: DataTypes.STRING, allowNull: false },

@@ -3,8 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import bookRouter from "./routes/bookRouter.js";
 import morgan from 'morgan'
-i//import swaggerUi from 'swagger-ui-express';
-//import swaggerDocument from './swagger.json' assert { type: "json" };
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const app = express();
 const PORT = 4000;
