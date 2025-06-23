@@ -1,7 +1,8 @@
 {
-   "name": "book_catalog",
+  "name": "book_catalog",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "nodemon server.js"
   },
