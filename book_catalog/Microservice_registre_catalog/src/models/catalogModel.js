@@ -3,7 +3,7 @@ import { connectDB } from '../config/postgredb.js';
 const registerCatalog = async (name, description, category) => {
   try {
     const query = `
-      INSERT INTO catalog (name, description, category) 
+      INSERT INTO catalog_db (name, description, category) 
       VALUES ($1, $2, $3) 
       RETURNING *;
     `;
