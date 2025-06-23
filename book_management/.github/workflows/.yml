@@ -1,0 +1,64 @@
+name: Registry image
+
+on:
+  push:
+    branches: ["QA"]
+
+jobs:
+  # BOOK DOMAIN CONTINUOUS DEPLOYMENT
+  login-push-bookcreate:
+    needs: [detect-changes]
+    if: contains(needs.detect-changes.outputs.modified_dirs, 'createbook')
+    uses: ./.github/workflows/login-build-push.yml
+    secrets:
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      repository_name: ${{ secrets.DOCKER_REPOSITORY_CREATEBOOK }}
+      domain_name: ${{ secrets.BOOK_DOMAIN_NAME }}
+
+  login-push-bookread:
+    needs: [detect-changes]
+    if: contains(needs.detect-changes.outputs.modified_dirs, 'readbook')
+    uses: ./.github/workflows/login-build-push.yml
+    secrets:
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      repository_name: ${{ secrets.DOCKER_REPOSITORY_READBOOK }}
+      domain_name: ${{ secrets.BOOK_DOMAIN_NAME }}
+
+  login-push-bookupdate:
+    needs: [detect-changes]
+    if: contains(needs.detect-changes.outputs.modified_dirs, 'updatebook')
+    uses: ./.github/workflows/login-build-push.yml
+    secrets:
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      repository_name: ${{ secrets.DOCKER_REPOSITORY_UPDATEBOOK }}
+      domain_name: ${{ secrets.BOOK_DOMAIN_NAME }}
+
+  login-push-bookdelete:
+    needs: [detect-changes]
+    if: contains(needs.detect-changes.outputs.modified_dirs, 'deletebook')
+    uses: ./.github/workflows/login-build-push.yml
+    secrets:
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      repository_name: ${{ secrets.DOCKER_REPOSITORY_DELETEBOOK }}
+      domain_name: ${{ secrets.BOOK_DOMAIN_NAME }}
+
+  ec2-cd-bookdomain:
+    needs: [
+      login-push-bookcreate,
+      login-push-bookread,
+      login-push-bookupdate,
+      login-push-bookdelete
+    ]
+    if: always()
+    uses: ./.github/workflows/setupDocker.yml
+    secrets:
+      ec2_host: ${{ secrets.EC2_BOOK_IP }}
+      ec2_key: ${{ secrets.EC2_BOK_KEY }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      domain_name: ${{ secrets.BOOK_DOMAIN_NAME }}
+
+  

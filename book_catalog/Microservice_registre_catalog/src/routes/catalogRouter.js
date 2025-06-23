@@ -6,4 +6,3 @@ const router = express.Router();
 router.post('/register', registerCatalog);
 
 export default router;
-
