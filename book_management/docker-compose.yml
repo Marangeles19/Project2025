@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  list-book:
+    build: ./Microservice_list_book
+    container_name: list-book-service
+    ports:
+      - "4003:4003"
+    restart: unless-stopped
+
+  register-book:
+    build: ./Microservice_register_book
+    container_name: register-book-service
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+  remove-book:
+    build: ./Microservice_remove_book
+    container_name: remove-book-service
+    ports:
+      - "4001:4001"
+    restart: unless-stopped
+
+  update-book:
+    build: ./Microservice_update_book
+    container_name: update-book-service
+    ports:
+      - "4002:4002"
+    restart: unless-stopped
