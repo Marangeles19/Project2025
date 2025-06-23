@@ -1,11 +1,10 @@
 import express from 'express';
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import catalogRouter from './routes/catalog.js';
+import catalogRouter from './routes/catalogRouter.js';
 import morgan from 'morgan'
-
-// import swaggerUi from 'swagger-ui-express';
-// import swaggerDocument from './swagger.json' assert { type: "json" };
+//import swaggerUi from 'swagger-ui-express';
+//import swaggerDocument from './swagger.json' assert { type: "json" };
 const app = express();
 const PORT = 3001;
 
@@ -23,7 +22,7 @@ app.use(cookieParser()); // Middleware para manejar cookies-prove
 
 app.use(express.json());
 
-// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/api/catalog ', catalogRouter);
 

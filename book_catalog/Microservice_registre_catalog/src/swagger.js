@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 
 const outputFile = './swagger.json';
-const endpointsFiles = ['./routes/catalog.js'];
+const endpointsFiles = ['./routes/catalogRouter.js'];
 
 const doc = {
     info: {
