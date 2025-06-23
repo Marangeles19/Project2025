@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
-import catalogRouter from './routes/catalogRouter.js';
+import catalogRouter from './routers/catalogRouter.js';
 import morgan from 'morgan'
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: "json" };
@@ -28,4 +28,6 @@ app.use('/api', catalogRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 }); 
+
+
 

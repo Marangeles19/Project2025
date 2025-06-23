@@ -1,9 +1,10 @@
-import express from "express";
-import cors from "cors";
+import express from 'express';
+import cors from 'cors';
 import cookieParser from "cookie-parser";
-import catalogRouter from "./routes/catalogRouter.js";
+import catalogRouter from './routes/catalogRouter.js';
 import morgan from 'morgan'
-
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerDocument from './swagger.json' assert { type: "json" };
 const app = express();
 const PORT = 3002;
 
@@ -20,10 +21,13 @@ app.use(express.json());
 app.use(cookieParser()); // Middleware para manejar cookies-prove
 
 app.use(express.json());
-// Rutas de vacunas
-app.use("/api", catalogRouter);
 
-// Inicia el servidor
+// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api', catalogRouter);
+
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+  console.log(`Server is running on port ${PORT}`);
+}); 
+
+
+

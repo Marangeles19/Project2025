@@ -3,6 +3,6 @@ import * as catalogController from '../controllers/catalogController.js';
 
 const router = express.Router();
 
-router.delete('/deleteVaccine/:id', catalogController.deleteCatalog); // Delete a catalog by ID
+router.delete('/deleteCatalog/:id', catalogController.deleteCatalog); // Delete a catalog by ID
 
 export default router;

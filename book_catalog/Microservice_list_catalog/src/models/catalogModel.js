@@ -1,4 +1,4 @@
-import { connectDB } from '../config/postgredb.js';
+import { connectDB } from '../config/postrgedb.js';
 
 export const getCatalog = async () => {
   try {
