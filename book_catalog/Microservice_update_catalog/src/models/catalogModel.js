@@ -7,9 +7,9 @@ export const updateCatalog = async (id, name, description, category) => {
     }
 
     const query = `
-      UPDATE catalog
+      UPDATE catalog_db
       SET name = $1, description = $2, category = $3
-      WHERE id_catalog = $4
+      WHERE id = $4
       RETURNING *;
     `;
     

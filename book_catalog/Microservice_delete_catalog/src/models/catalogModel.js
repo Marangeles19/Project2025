@@ -6,7 +6,7 @@ const deleteCatalog = async (id) => {
             throw new Error('Invalid ID provided');
         }
         const result = await connectDB.query(
-            'DELETE FROM catalog WHERE id_catalog = $1 RETURNING *',
+            'DELETE FROM catalog_db WHERE id = $1 RETURNING *',
             [id] 
         );
         if (result.rows.length === 0) {

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import catalogRouter from './src/routes/catalogRouter.js';
+import catalogRouter from './routes/catalogRouter.js';
 import morgan from 'morgan'
 //import swaggerUi from 'swagger-ui-express';
 //import swaggerDocument from './swagger.json' assert { type: "json" };
