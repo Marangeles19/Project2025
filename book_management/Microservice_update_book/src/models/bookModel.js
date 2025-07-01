@@ -1,7 +1,7 @@
 import { database } from '../config/mysqldb.js';
 import { DataTypes } from 'sequelize';
 
-const BookModel = database.define('book', {
+const BookModel = database.define('Books', {
   title: { type: DataTypes.STRING, allowNull: false },
   author: { type: DataTypes.STRING, allowNull: false },
   category: { type: DataTypes.STRING, allowNull: false },
@@ -11,7 +11,7 @@ const BookModel = database.define('book', {
   available_copies: { type: DataTypes.INTEGER, allowNull: false },
   location: { type: DataTypes.STRING, allowNull: false },
 }, {
-  tableName: 'book',
+  tableName: 'books',
   timestamps: false,
 });
 
