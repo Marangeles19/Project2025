@@ -1,0 +1,27 @@
+name: Registry image
+
+on:
+  push:
+    branches: ["QA"]
+
+jobs:
+  # BOOK DOMAIN CONTINUOUS DEPLOYMENT
+  login-push-book-management-list:
+    uses: ./.github/workflows/login-push.yml
+    secrets:
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      repository_name: ${{ secrets.DOCKER_REPOSITORY_BOOK_LIST }}
+      domain_name: ${{ secrets.DOMAIN_BOOK_MANAGEMENT }}
+
+  
+  ec2-cd-bookdomain:
+    needs: [
+      login-push-book-management-list
+    ]
+    uses: ./.github/workflows/aws.yml
+    secrets:
+      ec2_host: ${{ secrets.EC2_BOOK_IP }}
+      ec2_key: ${{ secrets.EC2_BOOK_KEY }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      domain_name: ${{ secrets.DOMAIN_BOOK_MANAGEMENT }}
