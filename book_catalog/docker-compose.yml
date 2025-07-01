@@ -1,0 +1,24 @@
+services:
+  registre_catalog:
+    build: ./microservice_registre_catalog
+    container_name: registre_catalog
+    ports:
+      - "3001:3001"
+
+  list_catalog:
+    build: ./microservice_list_catalog
+    container_name: list_catalog
+    ports:
+      - "3002:3002"
+
+  update_catalog:
+    build: ./microservice_update_catalog
+    container_name: update_catalog
+    ports:
+      - "3003:3003"
+
+  delete_catalog:
+    build: ./microservice_delete_catalog
+    container_name: delete_catalog
+    ports:
+      - "3004:3004"
