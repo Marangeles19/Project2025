@@ -96,8 +96,8 @@ jobs:
             sudo docker images
 
             # Detener y eliminar los contenedores existentes por nombre
-            sudo docker stop microservice_register_dog || true
-            sudo docker rm microservice_register_dog || true
+            sudo docker stop microservice_register_book || true
+            sudo docker rm microservice_register_book || true
             sudo docker stop microservice_updateBook || true
             sudo docker rm microservice_updateBook || true
             sudo docker stop microservice_list_book || true
@@ -120,8 +120,8 @@ jobs:
             cat src/.env
 
             # Ejecutar los contenedores Docker con el archivo .env dentro de src
-            echo "Ejecutando microservice_create_dog..."
-            sudo docker run -d --name microservice_register_dog --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_dog:latest
+            echo "Ejecutando microservice_register_book..."
+            sudo docker run -d --name microservice_register_book --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_dog:latest
             echo "Ejecutando microservice_updateBook..."
             sudo docker run -d --name microservice_updateBook --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_updateBook:latest
             echo "Ejecutando microservice_list_book..."
