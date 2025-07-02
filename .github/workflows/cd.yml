@@ -30,12 +30,8 @@ jobs:
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest
           done
 
-<<<<<<< HEAD
 
   deploy-book-management:
-=======
-  deploy-book-management:
->>>>>>> 54f0e8edb877960153972d1df03ed6a7e1e7fd01
     needs: build-and-push
     runs-on: ubuntu-latest
 
