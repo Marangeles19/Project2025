@@ -1,0 +1,139 @@
+name: CI/CD - Docker Build & Deploy
+
+on:
+  push:
+    branches:
+      - QA  # O la rama que estés utilizando
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Paso 2: Login en Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Paso 3: Construir y subir la imagen Docker del cliente
+      - name: Build and Push Client Docker image
+        run: |
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+
+      # Paso 4: Construir y subir las imágenes Docker de los microservicios
+      - name: Build and Push Book Management Microservices
+        run: |
+          for service in create update list remove; do
+            echo "Building and pushing microservice_${service}_book..."
+            docker build -f book_management/Microservice_${service}_book/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest book_management/Microservice_${service}_book
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest
+          done
+        
+  # deploy-client:
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-push
+
+  #   steps:
+  #     - name: SSH into EC2 (Client) and deploy Docker container
+  #       uses: appleboy/ssh-action@v1.2.0
+  #       with:
+  #         host: ${{ secrets.EC2_CLIENT_SERVER }}
+  #         username: ubuntu
+  #         key: ${{ secrets.CLIENT_SERVER_KEY }}
+  #         script: |
+  #           # Asegurarse de que Docker esté instalado
+  #           if ! command -v docker &> /dev/null; then
+  #             echo "Docker no está instalado. Instalando..."
+  #             sudo apt update && sudo apt install -y docker.io
+  #           fi
+
+  #           # Hacer que Docker arranque automáticamente
+  #           sudo systemctl enable --now docker
+
+  #           # Descargar la última imagen del cliente desde Docker Hub
+  #           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+
+  #           # Detener y eliminar contenedores existentes (si los hay)
+  #           sudo docker ps -q | xargs sudo docker stop || true
+  #           sudo docker ps -q | xargs sudo docker rm || true
+
+  #           # Iniciar el nuevo contenedor con la imagen descargada
+  #           sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+
+  #           # Verificar que el contenedor se esté ejecutando
+  #           sudo docker ps -a
+
+  deploy-boo-management:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and deploy Docker containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_BOOK_IP}}
+          username: ubuntu
+          key: ${{ secrets.BOOK_KEY }}
+          script: |
+            # Verificar si Docker está instalado, si no, instalarlo
+            if ! command -v docker &> /dev/null; then
+              echo "Docker no está instalado. Instalando..."
+              sudo apt update && sudo apt install -y docker.io
+            fi
+
+            # Hacer que Docker se inicie automáticamente
+            sudo systemctl enable --now docker
+
+            # Descargar las últimas imágenes desde Docker Hub
+            echo "Descargando imágenes..."
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_book:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_book:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_book:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_remove_book:latest
+            
+            # Verificar si las imágenes fueron descargadas correctamente
+            sudo docker images
+
+            # Detener y eliminar los contenedores existentes por nombre
+            sudo docker stop microservice_register_dog || true
+            sudo docker rm microservice_register_dog || true
+            sudo docker stop microservice_updateBook || true
+            sudo docker rm microservice_updateBook || true
+            sudo docker stop microservice_list_book || true
+            sudo docker rm microservice_list_book|| true
+            sudo docker stop microservice_remove_book || true
+            sudo docker rm microservice_remove_book || true
+
+            # Verificar las variables de entorno antes de generar el archivo
+            echo "Base de datos: $REACT_APP_RDS_HOST"
+
+            # Crear el archivo .env dentro de la carpeta src
+            mkdir -p src
+            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> src/.env
+            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
+            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
+            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
+            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
+
+            # Verificar que el archivo .env se ha creado correctamente
+            cat src/.env
+
+            # Ejecutar los contenedores Docker con el archivo .env dentro de src
+            echo "Ejecutando microservice_create_dog..."
+            sudo docker run -d --name microservice_register_dog --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_dog:latest
+            echo "Ejecutando microservice_updateBook..."
+            sudo docker run -d --name microservice_updateBook --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_updateBook:latest
+            echo "Ejecutando microservice_list_book..."
+            sudo docker run -d --name microservice_list_book --env-file src/.env -p 4001:4001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_book:latest
+            echo "Ejecutando microservice_remove_book..."
+            sudo docker run -d --name microservice_remove_book --env-file src/.env -p 4002:4002 ${{ secrets.DOCKER_USERNAME }}/microservice_remove_book:latest
+
+            # Verificar que los contenedores están corriendo
+            sudo docker ps -a
