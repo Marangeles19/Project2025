@@ -29,40 +29,6 @@ jobs:
             docker build -f book_management/Microservice_${service}_book/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest book_management/Microservice_${service}_book
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest
           done
-        
-  # deploy-client:
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-push
-
-  #   steps:
-  #     - name: SSH into EC2 (Client) and deploy Docker container
-  #       uses: appleboy/ssh-action@v1.2.0
-  #       with:
-  #         host: ${{ secrets.EC2_CLIENT_SERVER }}
-  #         username: ubuntu
-  #         key: ${{ secrets.CLIENT_SERVER_KEY }}
-  #         script: |
-  #           # Asegurarse de que Docker esté instalado
-  #           if ! command -v docker &> /dev/null; then
-  #             echo "Docker no está instalado. Instalando..."
-  #             sudo apt update && sudo apt install -y docker.io
-  #           fi
-
-  #           # Hacer que Docker arranque automáticamente
-  #           sudo systemctl enable --now docker
-
-  #           # Descargar la última imagen del cliente desde Docker Hub
-  #           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-  #           # Detener y eliminar contenedores existentes (si los hay)
-  #           sudo docker ps -q | xargs sudo docker stop || true
-  #           sudo docker ps -q | xargs sudo docker rm || true
-
-  #           # Iniciar el nuevo contenedor con la imagen descargada
-  #           sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-  #           # Verificar que el contenedor se esté ejecutando
-  #           sudo docker ps -a
 
   deploy-boo-management:
     needs: build-and-push
