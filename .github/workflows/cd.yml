@@ -24,7 +24,7 @@ jobs:
       # Paso 4: Construir y subir las imágenes Docker de los microservicios
       - name: Build and Push Book Management Microservices
         run: |
-          for service in create update list remove; do
+          for service in register update list remove; do
             echo "Building and pushing microservice_${service}_book..."
             docker build -f book_management/Microservice_${service}_book/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest book_management/Microservice_${service}_book
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest
