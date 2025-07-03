@@ -71,11 +71,10 @@ jobs:
             sudo docker stop microservice_remove_book || true && sudo docker rm microservice_remove_book || true
 
             mkdir -p src
-            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" > src/.env
-            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
-            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
-            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
-            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
+            echo "DB_HOST=${{ secrets.DB_HOST }}" > src/.env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> src/.env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> src/.env
+            echo "DB_PASS=${{ secrets.DB_PASS }}" >> src/.env
 
             cat src/.env
 
