@@ -65,8 +65,8 @@ jobs:
             # Detener y eliminar los contenedores existentes por nombre
             sudo docker stop microservice_register_book || true
             sudo docker rm microservice_register_book || true
-            sudo docker stop microservice_updateBook || true
-            sudo docker rm microservice_updateBook || true
+            sudo docker stop microservice_update_book || true
+            sudo docker rm microservice_update_book || true
             sudo docker stop microservice_list_book || true
             sudo docker rm microservice_list_book|| true
             sudo docker stop microservice_remove_book || true
@@ -88,9 +88,9 @@ jobs:
 
             # Ejecutar los contenedores Docker con el archivo .env dentro de src
             echo "Ejecutando microservice_register_book..."
-            sudo docker run -d --name microservice_register_book --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_dog:latest
-            echo "Ejecutando microservice_updateBook..."
-            sudo docker run -d --name microservice_updateBook --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_updateBook:latest
+            sudo docker run -d --name microservice_register_book --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_book:latest
+            echo "Ejecutando microservice_update_book..."
+            sudo docker run -d --name microservice_update_book --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_book:latest
             echo "Ejecutando microservice_list_book..."
             sudo docker run -d --name microservice_list_book --env-file src/.env -p 4001:4001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_book:latest
             echo "Ejecutando microservice_remove_book..."

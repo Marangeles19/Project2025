@@ -2,28 +2,28 @@ version: '3.9'
 
 services:
   list-book:
-    build: ./Microservice_list_book
+    image: mangie1998/microservice_list_book:latest
     container_name: list-book-service
     ports:
       - "4003:4003"
     restart: unless-stopped
 
   register-book:
-    build: ./Microservice_register_book
+    image: mangie1998/microservice_register_book:latest
     container_name: register-book-service
     ports:
       - "4000:4000"
     restart: unless-stopped
 
   remove-book:
-    build: ./Microservice_remove_book
+    image: mangie1998/microservice_remove_book:latest
     container_name: remove-book-service
     ports:
       - "4001:4001"
     restart: unless-stopped
 
   update-book:
-    build: ./Microservice_update_book
+    image: mangie1998/microservice_update_book:latest
     container_name: update-book-service
     ports:
       - "4002:4002"
