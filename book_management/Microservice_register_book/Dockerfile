@@ -1,20 +1,18 @@
-# Set the base image to Node.js 18 with the Alpine Linux distribution (lightweight version)
+# Set the base image to Node.js 18 with Alpine Linux
 FROM node:18-alpine
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json (if it exists) into the container
+# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Install the project dependencies using npm
 RUN npm install
 
-# Copy the rest of the application code into the container
-COPY . .
+# Copy only what we need
+COPY src /usr/src/app/src
 
-# Expose port 4000 (the port the service will listen to by default)
+# Expose port
 EXPOSE 4000
 
-# Run the application using node, starting from the src/server.js file
+# Start the app
 CMD ["node", "src/server.js"]
