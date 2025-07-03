@@ -119,11 +119,11 @@ jobs:
             sudo docker stop microservice_delete_catalog || true && sudo docker rm microservice_delete_catalog || true
 
             mkdir -p src
-            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" > src/.env
-            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
-            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
-            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
-            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
+            echo "RDS_HOST=${{ secrets.RDS_HOST }}" > src/.env
+            echo "RDS_PORT=${{ secrets.RDS_PORT }}" >> src/.env
+            echo "RDS_DATABASE=${{ secrets.RDS_DATABASE }}" >> src/.env
+            echo "RDS_USER=${{ secrets.RDS_USER }}" >> src/.env
+            echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> src/.env
 
             cat src/.env
 
