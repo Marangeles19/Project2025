@@ -37,6 +37,8 @@ jobs:
             echo "Building and pushing microservice_${service}_catalog..."
             docker build -f book_catalog/Microservice_${service}_catalog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest book_catalog/Microservice_${service}_catalog
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest
+          done
+          
 
 
   deploy-book-management:
