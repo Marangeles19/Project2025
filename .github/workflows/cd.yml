@@ -98,3 +98,4 @@ jobs:
 
             # Verificar que los contenedores están corriendo
             sudo docker ps -a
+            echo "Despliegue de microservicios de gestión de libros completado."
