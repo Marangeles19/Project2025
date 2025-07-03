@@ -3,7 +3,7 @@ name: CI/CD - Docker Build & Deploy
 on:
   push:
     branches:
-      - QA  # O la rama que estés utilizando
+      - QA
 
 jobs:
   build-and-push:
@@ -21,7 +21,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Paso 4: Construir y subir las imágenes Docker de los microservicios
+      # Paso 3: Construir y subir imágenes de book_management
       - name: Build and Push Book Management Microservices
         run: |
           for service in register update list remove; do
@@ -30,72 +30,106 @@ jobs:
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest
           done
 
+      # Paso 4: Construir y subir imágenes de book_catalog
+      - name: Build and Push Book Catalog Microservices
+        run: |
+          for service in register update list delete; do
+            echo "Building and pushing microservice_${service}_catalog..."
+            docker build -f book_catalog/Microservice_${service}_catalog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest book_catalog/Microservice_${service}_catalog
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest
+
 
   deploy-book-management:
     needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into EC2 and deploy Docker containers
+      - name: SSH into EC2 Book Management and deploy containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_BOOK_IP}}
+          host: ${{ secrets.EC2_BOOK_IP }}
           username: ubuntu
           key: ${{ secrets.BOOK_KEY }}
           script: |
-            # Verificar si Docker está instalado, si no, instalarlo
             if ! command -v docker &> /dev/null; then
               echo "Docker no está instalado. Instalando..."
               sudo apt update && sudo apt install -y docker.io
             fi
-
-            # Hacer que Docker se inicie automáticamente
             sudo systemctl enable --now docker
 
-            # Descargar las últimas imágenes desde Docker Hub
             echo "Descargando imágenes..."
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_book:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_book:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_book:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_remove_book:latest
-            
-            # Verificar si las imágenes fueron descargadas correctamente
-            sudo docker images
 
-            # Detener y eliminar los contenedores existentes por nombre
-            sudo docker stop microservice_register_book || true
-            sudo docker rm microservice_register_book || true
-            sudo docker stop microservice_update_book || true
-            sudo docker rm microservice_update_book || true
-            sudo docker stop microservice_list_book || true
-            sudo docker rm microservice_list_book|| true
-            sudo docker stop microservice_remove_book || true
-            sudo docker rm microservice_remove_book || true
+            sudo docker stop microservice_register_book || true && sudo docker rm microservice_register_book || true
+            sudo docker stop microservice_update_book || true && sudo docker rm microservice_update_book || true
+            sudo docker stop microservice_list_book || true && sudo docker rm microservice_list_book || true
+            sudo docker stop microservice_remove_book || true && sudo docker rm microservice_remove_book || true
 
-            # Verificar las variables de entorno antes de generar el archivo
-            echo "Base de datos: $REACT_APP_RDS_HOST"
-
-            # Crear el archivo .env dentro de la carpeta src
             mkdir -p src
-            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> src/.env
+            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" > src/.env
             echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
             echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
             echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
             echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
 
-            # Verificar que el archivo .env se ha creado correctamente
             cat src/.env
 
-            # Ejecutar los contenedores Docker con el archivo .env dentro de src
-            echo "Ejecutando microservice_register_book..."
+            echo "Ejecutando microservicios book_management..."
             sudo docker run -d --name microservice_register_book --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_book:latest
-            echo "Ejecutando microservice_update_book..."
             sudo docker run -d --name microservice_update_book --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_book:latest
-            echo "Ejecutando microservice_list_book..."
             sudo docker run -d --name microservice_list_book --env-file src/.env -p 4001:4001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_book:latest
-            echo "Ejecutando microservice_remove_book..."
             sudo docker run -d --name microservice_remove_book --env-file src/.env -p 4002:4002 ${{ secrets.DOCKER_USERNAME }}/microservice_remove_book:latest
 
-            # Verificar que los contenedores están corriendo
             sudo docker ps -a
-            echo "Despliegue de microservicios de gestión de libros completado."
+            echo "Deployment of book_management completed."
+
+
+  deploy-book-catalog:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 Book Catalog and deploy containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_CATALOG_IP }}
+          username: ubuntu
+          key: ${{ secrets.CATALOG_KEY }}
+          script: |
+            if ! command -v docker &> /dev/null; then
+              echo "Docker no está instalado. Instalando..."
+              sudo apt update && sudo apt install -y docker.io
+            fi
+            sudo systemctl enable --now docker
+
+            echo "Descargando imágenes..."
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_catalog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_catalog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_catalog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_catalog:latest
+
+            sudo docker stop microservice_register_catalog || true && sudo docker rm microservice_register_catalog || true
+            sudo docker stop microservice_update_catalog || true && sudo docker rm microservice_update_catalog || true
+            sudo docker stop microservice_list_catalog || true && sudo docker rm microservice_list_catalog || true
+            sudo docker stop microservice_delete_catalog || true && sudo docker rm microservice_delete_catalog || true
+
+            mkdir -p src
+            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" > src/.env
+            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
+            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
+            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
+            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
+
+            cat src/.env
+
+            echo "Ejecutando microservicios book_catalog..."
+            sudo docker run -d --name microservice_register_catalog --env-file src/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_register_catalog:latest
+            sudo docker run -d --name microservice_update_catalog --env-file src/.env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_catalog:latest
+            sudo docker run -d --name microservice_list_catalog --env-file src/.env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_catalog:latest
+            sudo docker run -d --name microservice_delete_catalog --env-file src/.env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_catalog:latest
+
+            sudo docker ps -a
+            echo "Deployment of book_catalog completed."
