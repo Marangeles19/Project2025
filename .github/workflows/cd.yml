@@ -33,12 +33,12 @@ jobs:
       # Paso 4: Construir y subir imágenes de book_catalog
       - name: Build and Push Book Catalog Microservices
         run: |
-          for service in register update list delete; do
+          for service in registre update list delete; do
             echo "Building and pushing microservice_${service}_catalog..."
             docker build -f book_catalog/Microservice_${service}_catalog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest book_catalog/Microservice_${service}_catalog
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest
           done
-          
+
 
 
   deploy-book-management:
@@ -108,12 +108,12 @@ jobs:
             sudo systemctl enable --now docker
 
             echo "Descargando imágenes..."
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_catalog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_registre_catalog:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_catalog:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_catalog:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_catalog:latest
 
-            sudo docker stop microservice_register_catalog || true && sudo docker rm microservice_register_catalog || true
+            sudo docker stop microservice_registre_catalog || true && sudo docker rm microservice_registre_catalog || true
             sudo docker stop microservice_update_catalog || true && sudo docker rm microservice_update_catalog || true
             sudo docker stop microservice_list_catalog || true && sudo docker rm microservice_list_catalog || true
             sudo docker stop microservice_delete_catalog || true && sudo docker rm microservice_delete_catalog || true
@@ -128,7 +128,7 @@ jobs:
             cat src/.env
 
             echo "Ejecutando microservicios book_catalog..."
-            sudo docker run -d --name microservice_register_catalog --env-file src/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_register_catalog:latest
+            sudo docker run -d --name microservice_registre_catalog --env-file src/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_registre_catalog:latest
             sudo docker run -d --name microservice_update_catalog --env-file src/.env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_catalog:latest
             sudo docker run -d --name microservice_list_catalog --env-file src/.env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_catalog:latest
             sudo docker run -d --name microservice_delete_catalog --env-file src/.env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_catalog:latest
