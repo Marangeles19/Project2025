@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application code into the container
 COPY . .
 
-# Expose port 3001 (the port the service will listen to by default)
-EXPOSE 3001
+# Expose port 3005 (the port the service will listen to by default)
+EXPOSE 3005
 
 # Run the application using node, starting from the src/server.js file
 CMD ["node", "src/server.js"]

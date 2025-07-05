@@ -3,6 +3,7 @@ import SidebarAdmin from '../components/admin/SidebarAdmin';
 import HeaderAdmin from '../components/admin/HeaderAdmin';
 import Dashboard from '../components/admin/Dashboard';
 import RegisterBook from '../components/admin/RegisterBook'; // Asegúrate de que este componente exista
+import Catalog from '../components/admin/Catalog';
 
 const Admin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,6 +29,7 @@ const Admin = () => {
       <div className="text-gray-500 bg-gray-100 sm:ml-64 flex-1 p-4 mt-14 transition-all duration-300">
         {selectedMenu === 'Inicio' && <Dashboard />}
         {selectedMenu === 'RegisterBook' && <RegisterBook />}
+         {selectedMenu === 'Catalog' && <Catalog />}
       </div>
     </div>
   );

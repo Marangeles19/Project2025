@@ -3,17 +3,12 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 const initialForm = {
-  title: '',
-  author: '',
-  category: '',
-  language: '',
+  name: '',
   description: '',
-  total_copies: 0,
-  available_copies: 0,
-  location: '',
+  category: '',
 };
 
-const RegisterBook = () => {
+const Catalog = () => {
   const [books, setBooks] = useState([]);
   const [formData, setFormData] = useState(initialForm);
   const [showModal, setShowModal] = useState(false);
@@ -27,7 +22,7 @@ const RegisterBook = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await axios.get('http://50.17.43.217:4000/api/books/list');
+      const res = await axios.get('http://localhost:3002/api/catalog/list');
       setBooks(res.data);
     } catch (err) {
       console.error('Error al obtener libros:', err);
@@ -38,7 +33,7 @@ const RegisterBook = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: typeof initialForm[name] === 'number' ? Number(value) : value,
+      [name]: value,
     }));
   };
 
@@ -49,8 +44,12 @@ const RegisterBook = () => {
   };
 
   const handleEdit = (book) => {
-    setFormData(book);
-    setEditId(book._id);
+    setFormData({
+      name: book.name || '',
+      description: book.description || '',
+      category: book.category || '',
+    });
+    setEditId(book.id);
     setEditMode(true);
     setShowModal(true);
   };
@@ -58,9 +57,9 @@ const RegisterBook = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de eliminar este libro?')) {
       try {
-        await axios.delete(`http://50.17.43.217:4000/api/books/${id}`);
-        fetchBooks();
+        await axios.delete(`http://44.218.106.114:3003/api/books/${id}`);
         setMessage('Libro eliminado correctamente');
+        fetchBooks();
       } catch (err) {
         console.error('Error al eliminar libro:', err);
       }
@@ -71,10 +70,10 @@ const RegisterBook = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://50.17.43.217:4000/api/books/${editId}`, formData);
+        await axios.put(`http://44.218.106.114:3004/api/books/${editId}`, formData);
         setMessage('Libro actualizado correctamente');
       } else {
-        await axios.post('http://50.17.43.217:4000/api/books/add', formData);
+        await axios.post('http://44.218.106.114:3005/api/books/add', formData);
         setMessage('Libro registrado correctamente');
       }
       fetchBooks();
@@ -95,32 +94,21 @@ const RegisterBook = () => {
 
       {message && <div className="alert alert-success mt-3">{message}</div>}
 
-      {/* Tabla de libros */}
       <table className="table table-striped mt-4">
         <thead>
           <tr>
-            <th>Título</th>
-            <th>Autor</th>
+            <th>Nombre</th>
             <th>Categoría</th>
-            <th>Idioma</th>
             <th>Descripción</th>
-            <th>Ubicación</th>
-            <th>Copias</th>
             <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
           {books.map((book) => (
-            <tr key={book._id}>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
+            <tr key={book.id}>
+              <td>{book.name}</td>
               <td>{book.category}</td>
-              <td>{book.language}</td>
               <td>{book.description}</td>
-              <td>{book.location}</td>
-              <td>
-                {book.available_copies} / {book.total_copies}
-              </td>
               <td>
                 <Button
                   variant="warning"
@@ -133,7 +121,7 @@ const RegisterBook = () => {
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={() => handleDelete(book._id)}
+                  onClick={() => handleDelete(book.id)}
                 >
                   Eliminar
                 </Button>
@@ -143,25 +131,46 @@ const RegisterBook = () => {
         </tbody>
       </table>
 
-      {/* Modal para agregar/editar libro */}
       <Modal show={showModal} onHide={() => setShowModal(false)} backdrop="static">
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? 'Editar Libro' : 'Registrar Libro'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            {Object.keys(initialForm).map((key) => (
-              <Form.Group className="mb-3" key={key}>
-                <Form.Label>{key.replace('_', ' ').toUpperCase()}</Form.Label>
-                <Form.Control
-                  type={typeof initialForm[key] === 'number' ? 'number' : 'text'}
-                  name={key}
-                  value={formData[key]}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            ))}
+            <Form.Group className="mb-3" controlId="formName">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formCategory">
+              <Form.Label>Categoría</Form.Label>
+              <Form.Control
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formDescription">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
             <div className="d-flex justify-content-end">
               <Button
                 variant="secondary"
@@ -181,4 +190,4 @@ const RegisterBook = () => {
   );
 };
 
-export default RegisterBook;
+export default Catalog;

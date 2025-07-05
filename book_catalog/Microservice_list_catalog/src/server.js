@@ -9,7 +9,8 @@ const app = express();
 const PORT = 3002;
 
 const corsOptions = {
-  origin: "http://54.147.184.127",
+  origin: "http://localhost:5173",
+  // origin: "http://54.147.184.127",
   credentials: true,
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type,Authorization",
