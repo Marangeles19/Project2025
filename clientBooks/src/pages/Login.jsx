@@ -23,7 +23,7 @@ export const Login = () => {
     try {
       if (state === 'Sign Up') {
         // Lógica para el registro
-        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
+        const { data } = await axios.post(`http://localhost:4000/api/auth/register`, {
           name,
           email,
           password,
@@ -38,7 +38,7 @@ export const Login = () => {
         }
       } else if (state === 'Login') {
         // Lógica para el login
-        const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
+        const { data } = await axios.post(`http://localhost:4000/api/auth/login`, {
           email,
           password,
         });
