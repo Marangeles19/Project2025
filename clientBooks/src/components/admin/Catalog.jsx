@@ -57,7 +57,7 @@ const Catalog = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de eliminar este libro?')) {
       try {
-        await axios.delete(`http://44.218.106.114:3003/api/books/${id}`);
+        await axios.delete(`http://localhost:3003/api/catalog/delete/${id}`);
         setMessage('Libro eliminado correctamente');
         fetchBooks();
       } catch (err) {
@@ -70,10 +70,16 @@ const Catalog = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://44.218.106.114:3004/api/books/${editId}`, formData);
+        await axios.put(
+          `http://localhost:3004/api/catalog/update/${editId}`,
+          formData
+        );
         setMessage('Libro actualizado correctamente');
       } else {
-        await axios.post('http://44.218.106.114:3005/api/books/add', formData);
+        await axios.post(
+          'http://localhost:3005/api/catalog/register',
+          formData
+        );
         setMessage('Libro registrado correctamente');
       }
       fetchBooks();

@@ -27,10 +27,19 @@ const RegisterBook = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await axios.get('http://50.17.43.217:4000/api/books/list');
-      setBooks(res.data);
+      const res = await axios.get('http://localhost:4000/api/books/list');
+      console.log('Respuesta de API:', res.data);
+      // Cambia esto si tu API devuelve books como propiedad
+      if (Array.isArray(res.data)) {
+        setBooks(res.data);
+      } else if (Array.isArray(res.data.books)) {
+        setBooks(res.data.books);
+      } else {
+        setBooks([]); // fallback para evitar crash
+      }
     } catch (err) {
       console.error('Error al obtener libros:', err);
+      setBooks([]);
     }
   };
 
@@ -49,20 +58,20 @@ const RegisterBook = () => {
   };
 
   const handleEdit = (book) => {
-    setFormData(book);
-    setEditId(book._id);
+    setFormData({ ...book });
+    setEditId(book.id);
     setEditMode(true);
     setShowModal(true);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de eliminar este libro?')) {
+    if (window.confirm('¿Eliminar este libro?')) {
       try {
-        await axios.delete(`http://50.17.43.217:4000/api/books/${id}`);
-        fetchBooks();
+        await axios.delete(`http://localhost:4000/api/books/delete/${id}`);
         setMessage('Libro eliminado correctamente');
+        fetchBooks();
       } catch (err) {
-        console.error('Error al eliminar libro:', err);
+        console.error('Error al eliminar:', err);
       }
     }
   };
@@ -71,10 +80,10 @@ const RegisterBook = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://50.17.43.217:4000/api/books/${editId}`, formData);
+        await axios.put(`http://localhost:4000/api/books/update/${editId}`, formData);
         setMessage('Libro actualizado correctamente');
       } else {
-        await axios.post('http://50.17.43.217:4000/api/books/add', formData);
+        await axios.post('http://localhost:4000/api/books/register', formData);
         setMessage('Libro registrado correctamente');
       }
       fetchBooks();
@@ -89,13 +98,10 @@ const RegisterBook = () => {
     <div className="container my-5">
       <h2 className="mb-4 text-center">Gestión de Libros</h2>
 
-      <Button variant="primary" onClick={handleShow}>
-        + Nuevo Libro
-      </Button>
+      <Button variant="primary" onClick={handleShow}>+ Nuevo Libro</Button>
 
       {message && <div className="alert alert-success mt-3">{message}</div>}
 
-      {/* Tabla de libros */}
       <table className="table table-striped mt-4">
         <thead>
           <tr>
@@ -110,51 +116,41 @@ const RegisterBook = () => {
           </tr>
         </thead>
         <tbody>
-          {books.map((book) => (
-            <tr key={book._id}>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.category}</td>
-              <td>{book.language}</td>
-              <td>{book.description}</td>
-              <td>{book.location}</td>
-              <td>
-                {book.available_copies} / {book.total_copies}
-              </td>
-              <td>
-                <Button
-                  variant="warning"
-                  size="sm"
-                  onClick={() => handleEdit(book)}
-                  className="me-2"
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleDelete(book._id)}
-                >
-                  Eliminar
-                </Button>
-              </td>
+          {Array.isArray(books) && books.length > 0 ? (
+            books.map((book) => (
+              <tr key={book.id}>
+                <td>{book.title}</td>
+                <td>{book.author}</td>
+                <td>{book.category}</td>
+                <td>{book.language}</td>
+                <td>{book.description}</td>
+                <td>{book.location}</td>
+                <td>{book.available_copies} / {book.total_copies}</td>
+                <td>
+                  <Button variant="warning" size="sm" onClick={() => handleEdit(book)} className="me-2">Editar</Button>
+                  <Button variant="danger" size="sm" onClick={() => handleDelete(book.id)}>Eliminar</Button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="8" className="text-center">No hay libros registrados.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
-      {/* Modal para agregar/editar libro */}
       <Modal show={showModal} onHide={() => setShowModal(false)} backdrop="static">
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? 'Editar Libro' : 'Registrar Libro'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            {Object.keys(initialForm).map((key) => (
-              <Form.Group className="mb-3" key={key}>
+            {Object.entries(initialForm).map(([key, value]) => (
+              <Form.Group key={key} className="mb-3">
                 <Form.Label>{key.replace('_', ' ').toUpperCase()}</Form.Label>
                 <Form.Control
-                  type={typeof initialForm[key] === 'number' ? 'number' : 'text'}
+                  type={typeof value === 'number' ? 'number' : 'text'}
                   name={key}
                   value={formData[key]}
                   onChange={handleChange}
@@ -163,16 +159,8 @@ const RegisterBook = () => {
               </Form.Group>
             ))}
             <div className="d-flex justify-content-end">
-              <Button
-                variant="secondary"
-                onClick={() => setShowModal(false)}
-                className="me-2"
-              >
-                Cancelar
-              </Button>
-              <Button variant="primary" type="submit">
-                {editMode ? 'Actualizar' : 'Guardar'}
-              </Button>
+              <Button variant="secondary" onClick={() => setShowModal(false)} className="me-2">Cancelar</Button>
+              <Button variant="primary" type="submit">{editMode ? 'Actualizar' : 'Guardar'}</Button>
             </div>
           </Form>
         </Modal.Body>
