@@ -1,0 +1,15 @@
+1.    30 microservicios - Agrupados en Dominios de Negocios
+2.    Al menos 5 lenguajes de programación para backend... Para frontend considerar cros plataforma, Móvil, Desktop y Web.
+3.    Al menos 5 estilos de arquitectura: Rest. Soap. WebHook, WebSocket, GRPC o GraphQL.
+4.    Usar un enruteador, ejemplom API GATEWAY
+5.    Usar Load balancer y Auto Scaling Group , Multi AZ
+6.    Al menos 3 patrones de diseño en backend, ejemplo: KISS, SOLID, DRY, YAGNI o POLA, etc.
+7.    Usar al menos 7 bases de datos, de las cuales debe haber 3 tipos.
+8.    Usar la arquitectura Event Drive madatorio , y usar otras arquitecturas como N - Capas , MVC ,etc
+9.    Usar Observabilidad , herramientas Prometheus, Grafana, AWS cloudwatch  o Site 24x7, alertas
+10. Implementar DevOps para los ambientes de QA y Prod. Para el ambiente de Prod implementar Pull Request, que sera aprovado por su profesor. Github , DockerHub , AWS y CloudFlare.
+11. Seguridad - Implementar un Jump Box o Ec2 Bastion esto para producion incluyendo JWT y cors en todos los microservicios. Para QA implementar JWT y cors para todos los microservicios.
+12. Pruebas - implementar una prueba funcional en cada microservicio atado al proceso de CI
+13. Implementar CI - usar pruebas estaticas en cada microservicio.
+14. Documentacion - codigo en inglés, clean code, conventional commit y swagger, etc.
+15. La infraestructura debe estar generada en terraform  o sdk 
