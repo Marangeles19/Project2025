@@ -11,7 +11,7 @@ const registerCatalog = async (name, description, category) => {
 
     const result = await connectDB.query(query, values);
 
-    return result.rows[0]; // Retorna el catálogo registrado
+    return result.rows[0]; // Returns the registered catalog
   } catch (error) {
     console.error('Error registering catalog:', error);
     throw error;

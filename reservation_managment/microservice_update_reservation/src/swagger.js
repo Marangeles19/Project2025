@@ -5,10 +5,10 @@ const endpointsFiles = ['./routes/reservationRouter.js'];
 
 const doc = {
     info: {
-        title: 'Reservation API',
-        descriptiosn: 'API for delete reseration',
+        title: 'User Reservation API',
+        description: 'API for updating user reservations',
     },
-    host: 'localhost:7000',
+    host: 'localhost:7003',
     schemes: ['http', 'https'],
 };
 

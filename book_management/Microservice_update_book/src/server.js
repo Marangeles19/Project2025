@@ -17,7 +17,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(cookieParser()); // Middleware para manejar cookies-prove
+app.use(cookieParser()); // Middleware to manage cookies-proverly
 app.use(morgan('dev'))
 app.use(express.json());
 

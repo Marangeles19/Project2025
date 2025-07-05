@@ -3,6 +3,6 @@ import * as catalogController from '../controllers/catalogController.js';
 
 const router = express.Router();
 
-router.put('/update', catalogController.updateCatalog);  
+router.put('/update/:id', catalogController.updateCatalog);  
 
 export default router;

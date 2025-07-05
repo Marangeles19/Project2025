@@ -2,7 +2,7 @@ import * as catalogModel from '../models/catalogModel.js';
 
 const updateCatalog = async (req, res) => {
   try {
-    console.log('👉 Body recibido:', req.body); // para debug
+    console.log('👉 Body recibido:', req.body); // for debug
 
     const { id, name, description, category } = req.body;
 

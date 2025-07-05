@@ -24,7 +24,7 @@ const Reservation = () => {
 
   const fetchReservations = async () => {
     try {
-      const res = await axios.get('http://localhost:6000/api/reservations/list');
+      const res = await axios.get('http://localhost:7001/api/reservation/list');
       setReservations(Array.isArray(res.data) ? res.data : res.data.reservations || []);
     } catch (err) {
       console.error('Error fetching reservations:', err);
@@ -58,7 +58,7 @@ const Reservation = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this reservation?')) {
       try {
-        await axios.delete(`http://localhost:6003/api/reservations/delete/${id}`);
+        await axios.delete(`http://localhost:7002/api/reservation/delete/${id}`);
         setMessage('Reservation deleted successfully.');
         fetchReservations();
       } catch (err) {
@@ -71,10 +71,10 @@ const Reservation = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://localhost:6002/api/reservations/update/${editId}`, formData);
+        await axios.put(`http://localhost:7003/api/reservation/update/${editId}`, formData);
         setMessage('Reservation updated successfully.');
       } else {
-        await axios.post('http://localhost:6001/api/reservations/register', formData);
+        await axios.post('http://localhost:7000/api/reservation/register', formData);
         setMessage('Reservation created successfully.');
       }
       fetchReservations();

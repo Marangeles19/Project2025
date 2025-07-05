@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import userRouter from './routes/userRouter.js';
+import reservationRouter from './routes/reservationRouter.js';
 import morgan from 'morgan'
 //import swaggerUi from 'swagger-ui-express';
 //import swaggerDocument from './swagger.json' assert { type: "json" };
 const app = express();
-const PORT = 5000;
+const PORT = 7000;
 
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -26,10 +26,10 @@ app.use(express.json());
 //app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req, res) => {
-  res.send('Welcome to the User Microservice');
+  res.send('Welcome to the Reservation Microservice');
 });
 
-app.use('/api/user', userRouter);
+app.use('/api/reservation', reservationRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -3,8 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from './routes/userRouter.js';
 import morgan from 'morgan'
-//import swaggerUi from 'swagger-ui-express';
-//import swaggerDocument from './swagger.json' assert { type: "json" };
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: "json" };
 const app = express();
 const PORT = 5000;
 
@@ -23,7 +23,7 @@ app.use(cookieParser()); // Middleware para manejar cookies-prove
 
 app.use(express.json());
 
-//app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/users', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req, res) => {
   res.send('Welcome to the User Microservice');
