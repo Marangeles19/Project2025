@@ -54,7 +54,7 @@ const SidebarAdmin = ({ selectedMenu, onSelect, isSidebarOpen }) => {
               }`}
           >
             <BsShield size={30} />
-            <span className="text-lg font-medium">Register Book</span>
+            <span className="text-lg font-medium">Book Management</span>
           </li>
 
           {/* Item de Catalog */}
@@ -66,17 +66,28 @@ const SidebarAdmin = ({ selectedMenu, onSelect, isSidebarOpen }) => {
             <FaStar size={22} />
             <span className="text-lg font-medium">Catalog</span>
           </li>
-
-     
-          {/* Item de Historial */}
+     {/* Item de Users */}
           <li
-            onClick={() => onSelect('historial')}
+            onClick={() => onSelect('users')}
             className={`flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-gradient-to-r hover:from-sky-500 hover:to-blue-900 hover:text-white transition duration-300 transform hover:scale-105 ${selectedMenu === 'reporte-por-fechas' ? 'text-cyan-400' : ''
               }`}
           >
             <FaFileAlt size={22} />
-            <span className="text-lg font-medium">Historial</span>
+            <span className="text-lg font-medium">Users</span>
           </li>
+     
+          {/* Item de Historial */}
+          <li
+            onClick={() => onSelect('reservation')}
+            className={`flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-gradient-to-r hover:from-sky-500 hover:to-blue-900 hover:text-white transition duration-300 transform hover:scale-105 ${selectedMenu === 'reporte-por-fechas' ? 'text-cyan-400' : ''
+              }`}
+          >
+            <FaFileAlt size={22} />
+            <span className="text-lg font-medium">Reservation</span>
+          </li>
+
+
+       
         </ul>
       </div>
     </aside>

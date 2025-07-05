@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Users Microservice');
 });
 
-app.use('/api/users', userRouter);
+app.use('/api/user', userRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
