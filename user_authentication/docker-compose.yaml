@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  microservice_login:
+    build:
+      context: ./Microservice_login
+      dockerfile: Dockerfile
+    image: mangie1998/microservice_login:v1
+    ports:
+      - "6001:6001"
+    env_file:
+      - ./Microservice_login/src/.env
+    networks:
+      - auth_network
+
+  microservice_logout:
+    build:
+      context: ./Microservice_logout
+      dockerfile: Dockerfile
+    image: mangie1998/microservice_logout:v1
+    ports:
+      - "6002:6002"
+    env_file:
+      - ./Microservice_logout/src/.env
+    networks:
+      - auth_network
+
+  microservice_register_user:
+    build:
+      context: ./Microservice_register_user
+      dockerfile: Dockerfile
+    image: mangie1998/microservice_register_user:v1
+    ports:
+      - "6003:6003"
+    env_file:
+      - ./Microservice_register_user/src/.env
+    networks:
+      - auth_network
+
+  microservice_sendVerifiOTP:
+    build:
+      context: ./Microservice_sendVerifiOTP
+      dockerfile: Dockerfile
+    image: mangie1998/microservice_sendverifiotp:v1
+    ports:
+      - "6004:6004"
+    env_file:
+      - ./Microservice_sendVerifiOTP/src/.env  
+    networks:
+      - auth_network
+
+  microservice_verifiEmail:
+    build:
+      context: ./Microservice_verifiEmail
+      dockerfile: Dockerfile
+    image: mangie1998/microservice_verifiemail:v1
+    ports:
+      - "6005:6005"
+    env_file:
+      - ./Microservice_verifiEmail/src/.env
+    networks:
+      - auth_network
+
+networks:
+  auth_network:
+    driver: bridge
