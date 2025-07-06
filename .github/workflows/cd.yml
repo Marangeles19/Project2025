@@ -156,7 +156,7 @@ jobs:
       - name: SSH into EC2 Reservation Management and deploy containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_RESERVATION_IP }}
+          host: ${{ secrets.EC2_RESERVATION }}
           username: ubuntu
           key: ${{ secrets.RESERVATION_KEY }}
           script: |
@@ -202,7 +202,7 @@ jobs:
       - name: SSH into EC2 Users and deploy containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_USERS_IP }}
+          host: ${{ secrets.EC2_USERS }}
           username: ubuntu
           key: ${{ secrets.USERS_KEY }}
           script: |
