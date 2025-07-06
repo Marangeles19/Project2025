@@ -131,7 +131,7 @@ const Catalog = () => {
                   size="sm"
                   onClick={() => handleDelete(book.id)}
                 >
-                  Eliminar
+                  Delete
                 </Button>
               </td>
             </tr>
