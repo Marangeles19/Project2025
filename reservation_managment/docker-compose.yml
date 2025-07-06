@@ -1,0 +1,25 @@
+services:
+  registre_reservation:
+    build: ./microservice_register_reservation
+    container_name: registre_reservation
+    ports:
+      - "7000:7000"
+
+  list_reservation:
+    build: ./microservice_list_reservation
+    container_name: list_reservation
+    ports:
+      - "7001:7001"
+
+  update_reservation:
+    build: ./microservice_update_reservation
+    container_name: update_reservation
+    ports:
+      - "7003:7003"   
+
+  delete_reservation:
+    build: ./microservice_delete_reservation  
+    container_name: delete_reservation
+    ports:
+      - "7002:7002" 
+

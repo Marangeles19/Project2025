@@ -10,18 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Checkout del código
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Paso 2: Login en Docker Hub
+      # Paso 2: Login a Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Paso 3: Construir y subir imágenes de book_management
+      # Step 3: Build and upload book_management images
       - name: Build and Push Book Management Microservices
         run: |
           for service in register update list remove; do
@@ -30,7 +29,7 @@ jobs:
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_book:latest
           done
 
-      # Paso 4: Construir y subir imágenes de book_catalog
+      # Step 4: Build and upload book_catalog images
       - name: Build and Push Book Catalog Microservices
         run: |
           for service in registre update list delete; do
@@ -39,12 +38,27 @@ jobs:
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest
           done
 
+      # Step 5: Build and upload reservations_management images
+      - name: Build and Push Reservations Management Microservices
+        run: |
+          for service in register update list delete; do
+            echo "Building and pushing microservice_${service}_reservation..."
+            docker build -f reservations_management/Microservice_${service}_reservation/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest reservations_management/Microservice_${service}_reservation
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest
+          done
 
+      # Step 6: Build and upload users images
+      - name: Build and Push Users Microservices
+        run: |
+          for service in register update list remove; do
+            echo "Building and pushing microservice_${service}_user..."
+            docker build -f users/Microservice_${service}_user/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_user:latest users/Microservice_${service}_user
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_user:latest
+          done
 
   deploy-book-management:
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
       - name: SSH into EC2 Book Management and deploy containers
         uses: appleboy/ssh-action@v1.2.0
@@ -75,6 +89,7 @@ jobs:
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> src/.env
             echo "DB_USER=${{ secrets.DB_USER }}" >> src/.env
             echo "DB_PASS=${{ secrets.DB_PASS }}" >> src/.env
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> src/.env
 
             cat src/.env
 
@@ -87,11 +102,9 @@ jobs:
             sudo docker ps -a
             echo "Deployment of book_management completed."
 
-
   deploy-book-catalog:
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
       - name: SSH into EC2 Book Catalog and deploy containers
         uses: appleboy/ssh-action@v1.2.0
@@ -134,3 +147,95 @@ jobs:
 
             sudo docker ps -a
             echo "Deployment of book_catalog completed."
+
+  deploy-reservation-management:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into EC2 Reservation Management and deploy containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_RESERVATION_IP }}
+          username: ubuntu
+          key: ${{ secrets.RESERVATION_KEY }}
+          script: |
+            if ! command -v docker &> /dev/null; then
+              echo "Docker no está instalado. Instalando..."
+              sudo apt update && sudo apt install -y docker.io
+            fi
+            sudo systemctl enable --now docker
+
+            echo "Descargando imágenes..."
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_reservation:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_reservation:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_reservation:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_reservation:latest
+
+            sudo docker stop microservice_register_reservation || true && sudo docker rm microservice_register_reservation || true
+            sudo docker stop microservice_update_reservation || true && sudo docker rm microservice_update_reservation || true
+            sudo docker stop microservice_list_reservation || true && sudo docker rm microservice_list_reservation || true
+            sudo docker stop microservice_delete_reservation || true && sudo docker rm microservice_delete_reservation || true
+
+            mkdir -p src
+            echo "RDS_HOST=${{ secrets.RDS_HOST }}" > src/.env
+            echo "RDS_PORT=${{ secrets.RDS_PORT }}" >> src/.env
+            echo "RDS_DATABASE=${{ secrets.RDS_DATABASE }}" >> src/.env
+            echo "RDS_USER=${{ secrets.RDS_USER }}" >> src/.env
+            echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> src/.env
+
+            cat src/.env
+
+            echo "Ejecutando microservicios reservation_management..."
+            sudo docker run -d --name microservice_register_reservation --env-file src/.env -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_reservation:latest
+            sudo docker run -d --name microservice_update_reservation --env-file src/.env -p 7003:7003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_reservation:latest
+            sudo docker run -d --name microservice_list_reservation --env-file src/.env -p 7001:7001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_reservation:latest
+            sudo docker run -d --name microservice_delete_reservation --env-file src/.env -p 7002:7002 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_reservation:latest
+
+            sudo docker ps -a
+            echo "Deployment of reservation_management completed."
+
+  deploy-users:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into EC2 Users and deploy containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_USERS_IP }}
+          username: ubuntu
+          key: ${{ secrets.USERS_KEY }}
+          script: |
+            if ! command -v docker &> /dev/null; then
+              echo "Docker no está instalado. Instalando..."
+              sudo apt update && sudo apt install -y docker.io
+            fi
+            sudo systemctl enable --now docker
+
+            echo "Descargando imágenes..."
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_user:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_user:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_user:latest
+
+            sudo docker stop microservice_register_user || true && sudo docker rm microservice_register_user || true
+            sudo docker stop microservice_update_user || true && sudo docker rm microservice_update_user || true
+            sudo docker stop microservice_list_user || true && sudo docker rm microservice_list_user || true
+            sudo docker stop microservice_delete_user || true && sudo docker rm microservice_delete_user || true
+
+            mkdir -p src
+            echo "RDS_HOST=${{ secrets.RDS_HOST }}" > src/.env
+            echo "RDS_PORT=${{ secrets.RDS_PORT }}" >> src/.env
+            echo "RDS_DATABASE=${{ secrets.RDS_DATABASE }}" >> src/.env
+            echo "RDS_USER=${{ secrets.RDS_USER }}" >> src/.env
+            echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> src/.env
+
+            cat src/.env
+
+            echo "Ejecutando microservicios users..."
+            sudo docker run -d --name microservice_register_user --env-file src/.env -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
+            sudo docker run -d --name microservice_update_user --env-file src/.env -p 5003:5003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_user:latest
+            sudo docker run -d --name microservice_list_user --env-file src/.env -p 5001:5001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_user:latest
+            sudo docker run -d --name microservice_delete_user --env-file src/.env -p 5002:5002 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_user:latest
+
+            sudo docker ps -a
+            echo "Deployment of users completed."

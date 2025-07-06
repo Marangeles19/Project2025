@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose port 7000 (the port the service will listen to by default)
-EXPOSE 70001
+EXPOSE 7000
 
 # Run the application using node, starting from the src/server.js file
 CMD ["node", "src/server.js"]

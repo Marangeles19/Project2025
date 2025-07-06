@@ -1,0 +1,26 @@
+services:
+  registre_user: 
+    build: ./microservice_register_user
+    container_name: registre_user 
+    ports:
+      - "5000:5000"
+
+  list_user:
+    build: ./microservice_list_user
+    container_name: list_user 
+    ports:
+      - "5001:5001"
+
+  update_user:
+    build: ./microservice_update_user
+    container_name: update_user 
+    ports:
+      - "5003:5003"
+   
+  delete_user:
+    build: ./microservice_delete_user
+    container_name: delete_user
+    ports:
+      - "5002:5002"
+  
+
