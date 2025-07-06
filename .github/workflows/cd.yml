@@ -43,7 +43,7 @@ jobs:
         run: |
           for service in register update list delete; do
             echo "Building and pushing microservice_${service}_reservation..."
-            docker build -f reservation_management/Microservice_${service}_reservation/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest reservations_management/Microservice_${service}_reservation
+            docker build -f reservation_management/Microservice_${service}_reservation/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest reservation_management/Microservice_${service}_reservation
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest
           done
 
