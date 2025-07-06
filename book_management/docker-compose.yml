@@ -1,30 +1,26 @@
-version: '3.9'
-
 services:
-  list-book:
-    image: mangie1998/microservice_list_book:latest
-    container_name: list-book-service
-    ports:
-      - "4003:4003"
-    restart: unless-stopped
-
-  register-book:
-    image: mangie1998/microservice_register_book:latest
-    container_name: register-book-service
+  register_book:
+    build: ./microservice_register_book
+    container_name: register_book 
     ports:
       - "4000:4000"
-    restart: unless-stopped
 
-  remove-book:
-    image: mangie1998/microservice_remove_book:latest
-    container_name: remove-book-service
+  list_book:
+    build: ./microservice_list_book
+    container_name: list_book
     ports:
       - "4001:4001"
-    restart: unless-stopped
-
-  update-book:
-    image: mangie1998/microservice_update_book:latest
-    container_name: update-book-service
+  update_book:
+    build: ./microservice_update_book
+    container_name: update_book
     ports:
       - "4002:4002"
-    restart: unless-stopped
+   
+  remove_book:
+    build: ./microservice_remove_book
+    container_name: delete_book 
+    ports:
+      - "4003:4003"
+   
+  
+

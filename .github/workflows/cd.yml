@@ -96,9 +96,9 @@ jobs:
 
             echo "Ejecutando microservicios book_management..."
             sudo docker run -d --name microservice_register_book --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_book:latest
-            sudo docker run -d --name microservice_update_book --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_book:latest
+            sudo docker run -d --name microservice_update_book --env-file src/.env -p 4002:4002 ${{ secrets.DOCKER_USERNAME }}/microservice_update_book:latest
             sudo docker run -d --name microservice_list_book --env-file src/.env -p 4001:4001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_book:latest
-            sudo docker run -d --name microservice_remove_book --env-file src/.env -p 4002:4002 ${{ secrets.DOCKER_USERNAME }}/microservice_remove_book:latest
+            sudo docker run -d --name microservice_remove_book --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_remove_book:latest
 
             sudo docker ps -a
             echo "Deployment of book_management completed."
