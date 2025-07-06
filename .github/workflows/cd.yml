@@ -38,19 +38,20 @@ jobs:
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_catalog:latest
           done
 
-      # Step 5: Build and upload reservations_management images
+      # Step 5: Build and upload reservation_managment images
       - name: Build and Push Reservations Management Microservices
         run: |
+
           for service in register update list delete; do
             echo "Building and pushing microservice_${service}_reservation..."
-            docker build -f reservation_management/Microservice_${service}_reservation/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest reservation_management/Microservice_${service}_reservation
+            docker build -f reservation_managment/Microservice_${service}_reservation/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest reservation_managment/Microservice_${service}_reservation
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_reservation:latest
           done
 
       # Step 6: Build and upload users images
       - name: Build and Push Users Microservices
         run: |
-          for service in register update list remove; do
+          for service in register update list delete; do
             echo "Building and pushing microservice_${service}_user..."
             docker build -f users/Microservice_${service}_user/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_user:latest users/Microservice_${service}_user
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_user:latest
@@ -185,14 +186,14 @@ jobs:
 
             cat src/.env
 
-            echo "Ejecutando microservicios reservation_management..."
+            echo "Ejecutando microservicios reservation_managment..."
             sudo docker run -d --name microservice_register_reservation --env-file src/.env -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/microservice_register_reservation:latest
             sudo docker run -d --name microservice_update_reservation --env-file src/.env -p 7003:7003 ${{ secrets.DOCKER_USERNAME }}/microservice_update_reservation:latest
             sudo docker run -d --name microservice_list_reservation --env-file src/.env -p 7001:7001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_reservation:latest
             sudo docker run -d --name microservice_delete_reservation --env-file src/.env -p 7002:7002 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_reservation:latest
 
             sudo docker ps -a
-            echo "Deployment of reservation_management completed."
+            echo "Deployment of reservation_managment completed."
 
   deploy-users:
     needs: build-and-push
