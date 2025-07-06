@@ -71,7 +71,11 @@ const Reservation = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://localhost:7003/api/reservation/update/${editId}`, formData);
+        await axios.put(`http://localhost:7003/api/reservation/update/${editId}`, 
+          { id: editId, ...formData }
+        
+        );
+        
         setMessage('Reservation updated successfully.');
       } else {
         await axios.post('http://localhost:7000/api/reservation/register', formData);

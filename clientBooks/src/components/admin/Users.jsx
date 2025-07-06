@@ -44,6 +44,7 @@ const Users = () => {
   const handleShow = () => {
     setFormData(initialForm);
     setEditMode(false);
+    setEditId(null);
     setShowModal(true);
   };
 
@@ -75,8 +76,8 @@ const Users = () => {
     try {
       if (editMode) {
         await axios.put(
-          `http://localhost:5003/api/user/update/${editId}`,
-          formData
+          'http://localhost:5003/api/user/update',
+          { id: editId, ...formData }
         );
         setMessage('User updated successfully');
       } else {
@@ -107,6 +108,7 @@ const Users = () => {
       <table className="table table-striped mt-4">
         <thead>
           <tr>
+            <th>ID</th> {/* NUEVA COLUMNA */}
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
@@ -117,6 +119,7 @@ const Users = () => {
           {Array.isArray(users) && users.length > 0 ? (
             users.map((user) => (
               <tr key={user.id}>
+                <td>{user.id}</td> {/* MOSTRAR ID */}
                 <td>{user.name}</td>
                 <td>{user.lastname}</td>
                 <td>{user.email}</td>
@@ -141,7 +144,7 @@ const Users = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="text-center">
+              <td colSpan="5" className="text-center">
                 No users found.
               </td>
             </tr>
@@ -155,6 +158,13 @@ const Users = () => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
+            {editMode && (
+              <Form.Group className="mb-3">
+                <Form.Label>ID</Form.Label>
+                <Form.Control type="text" value={editId} disabled />
+              </Form.Group>
+            )}
+
             <Form.Group className="mb-3" controlId="formName">
               <Form.Label>First Name</Form.Label>
               <Form.Control

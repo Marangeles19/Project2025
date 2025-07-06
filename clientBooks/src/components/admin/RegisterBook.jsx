@@ -96,7 +96,7 @@ const RegisterBook = () => {
 
   return (
     <div className="container my-5">
-      <h2 className="mb-4 text-center">Gestión de Libros</h2>
+      <h2 className="mb-4 text-center">Book Management</h2>
 
       <Button variant="primary" onClick={handleShow}>+ Nuevo Libro</Button>
 

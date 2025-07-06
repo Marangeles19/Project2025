@@ -58,10 +58,11 @@ const Catalog = () => {
     if (window.confirm('¿Estás seguro de eliminar este libro?')) {
       try {
         await axios.delete(`http://localhost:3003/api/catalog/delete/${id}`);
-        setMessage('Libro eliminado correctamente');
+
+        setMessage('Book successfully deleted');
         fetchBooks();
       } catch (err) {
-        console.error('Error al eliminar libro:', err);
+        console.error('Error deleting book:', err);
       }
     }
   };
@@ -72,30 +73,31 @@ const Catalog = () => {
       if (editMode) {
         await axios.put(
           `http://localhost:3004/api/catalog/update/${editId}`,
-          formData
+          { id: editId, ...formData }
         );
-        setMessage('Libro actualizado correctamente');
+
+        setMessage('Correctly updated book');
       } else {
         await axios.post(
           'http://localhost:3005/api/catalog/register',
           formData
         );
-        setMessage('Libro registrado correctamente');
+        setMessage('Correctly registered book');
       }
       fetchBooks();
       setShowModal(false);
       setFormData(initialForm);
     } catch (err) {
-      console.error('Error al guardar libro:', err);
+      console.error('Error saving book:', err);
     }
   };
 
   return (
     <div className="container my-5">
-      <h2 className="mb-4 text-center">Gestión de Libros</h2>
+      <h2 className="mb-4 text-center">Catalog Management</h2>
 
       <Button variant="primary" onClick={handleShow}>
-        + Nuevo Libro
+        + New Catalog
       </Button>
 
       {message && <div className="alert alert-success mt-3">{message}</div>}
@@ -103,10 +105,10 @@ const Catalog = () => {
       <table className="table table-striped mt-4">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Descripción</th>
-            <th>Opciones</th>
+            <th>Catalog Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Options</th>
           </tr>
         </thead>
         <tbody>
@@ -186,7 +188,7 @@ const Catalog = () => {
                 Cancelar
               </Button>
               <Button variant="primary" type="submit">
-                {editMode ? 'Actualizar' : 'Guardar'}
+                {editMode ? 'Update' : 'Save'}
               </Button>
             </div>
           </Form>
