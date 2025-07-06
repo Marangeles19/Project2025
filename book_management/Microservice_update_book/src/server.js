@@ -7,7 +7,7 @@ import morgan from 'morgan'
 //import swaggerDocument from './src/swagger.json' assert { type: "json" };
 
 const app = express();
-const PORT = 4000;
+const PORT = 4002;
 
 const corsOptions = {
   origin: "http://localhost:5173", // Permitir peticiones solo desde el frontend

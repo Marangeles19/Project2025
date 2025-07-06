@@ -27,7 +27,7 @@ const RegisterBook = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await axios.get('http://localhost:4000/api/books/list');
+      const res = await axios.get('http://localhost:4001/api/books/list');
       console.log('Respuesta de API:', res.data);
       // Cambia esto si tu API devuelve books como propiedad
       if (Array.isArray(res.data)) {
@@ -67,7 +67,7 @@ const RegisterBook = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Eliminar este libro?')) {
       try {
-        await axios.delete(`http://localhost:4000/api/books/delete/${id}`);
+        await axios.delete(`http://localhost:4003/api/books/delete/${id}`);
         setMessage('Libro eliminado correctamente');
         fetchBooks();
       } catch (err) {
@@ -80,7 +80,7 @@ const RegisterBook = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://localhost:4000/api/books/update/${editId}`, formData);
+        await axios.put(`http://localhost:4002/api/books/update/${editId}`, formData);
         setMessage('Libro actualizado correctamente');
       } else {
         await axios.post('http://localhost:4000/api/books/register', formData);
